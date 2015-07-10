@@ -2,16 +2,47 @@ __author__ = 'Ueliton'
 import numpy as np
 import cv2
 
+"""
+Executa una calibracao do detector de bordas de Canny.
+
+Nesta alicacao e possivel varias os parametros minimos e maximos dos limiares
+utilizados para detectar bordas por meio de barras nas janelas das imagens.
+
+"""
+#Camera
 cap = cv2.VideoCapture(0)
 
+cv2.namedWindow('frame1')
+cv2.namedWindow('frame2')
+min = 0
+max = 400
+
+cannyMin = min
+cannyMax = min
+
+#Eventos das barras.
+#Estas funcoes sao chamadas todas as vezes que um valor muda na barra.
+def cannyTreshouldMin(value):
+    global cannyMin
+    cannyMin = value
+
+def cannyTreshouldMax(value):
+    global cannyMax
+    cannyMax = value
+
+#Barras
+cv2.createTrackbar('Trashold-Min', 'frame1', min, max, cannyTreshouldMin)
+cv2.createTrackbar('Trashold-Max', 'frame1', min, max, cannyTreshouldMax)
+
 while(True):
-    # Capture frame-by-frame
+    # frame-By-Frame
     ret, frame = cap.read()
 
-    # Our operations on the frame come here
+    # Operacores com os frames
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    canny = cv2.Canny(gray, 100, 200)
-    # Display the resulting frame
+    canny = cv2.Canny(gray, cannyMin, cannyMax)
+    print "Min:"+str(cannyMin)+" Max:"+str(cannyMax)
+    # Resultados
     cv2.imshow('frame1',canny)
     cv2.imshow('frame2',gray)
 
