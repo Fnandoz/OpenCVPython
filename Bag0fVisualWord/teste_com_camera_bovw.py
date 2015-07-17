@@ -1,6 +1,8 @@
-import cv2
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 __author__ = 'Ueliton'
+import cv2
 
 import bovw
 
@@ -9,14 +11,15 @@ if __name__ == '__main__':
 
     #Camera
     camera = cv2.VideoCapture(0)
-    bovw = bovw.BOVW()
+    bovw = bovw.BOVW(extrator=bovw.BOVW_EXTRATOR.SIFT)
 
     while True:
-        #Lê uma imagem
+        #LÃª uma imagem
         _, imagem = camera.read()
 
-        bovw.adiciona_e_detecta_pontos_de_interesse_de_uma_imagem(imagem)
+        bovw.adiciona_uma_imagem_e_detecta_descreve_pontos_de_interesses(imagem)
         bovw.desenha_pontos_de_interesse_nas_imagens_coloridas()
+
         imagem = bovw.ultima_imagem_BRG_adicionada()
 
         cv2.imshow("Imagem", imagem)
@@ -24,5 +27,8 @@ if __name__ == '__main__':
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-
+print "Clusterizand..."
+bovw.cria_vetor_de_atributos_das_imagens()
+bovw.cria_vocabulario()
+print "Vocabulario Criado"
 

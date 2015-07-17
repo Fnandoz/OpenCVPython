@@ -14,10 +14,11 @@ class BOVW_EXTRATOR(Enum):
 
 class BOVW:
 
-    def __init__(self, extrator = BOVW_EXTRATOR.SIFT, tamanho_do_dicionario=32):
+    def __init__(self, extrator = BOVW_EXTRATOR.SIFT, tamanho_do_dicionario=128):
 
         self.tamanho_do_dicionario = tamanho_do_dicionario
         self.pontos_de_interesse_das_imagens = []
+        self.descritores_das_imagens = []
         self.imagens_em_tons_de_cinza = []
         self.imagens_BGR = []
         self.numero_de_imagens = 0
@@ -34,6 +35,14 @@ class BOVW:
         elif extrator == BOVW_EXTRATOR.ORB:
             self.extrator = cv2.ORB_create(tamanho_do_dicionario)
 
+    def cria_vetor_de_atributos_das_imagens(self):
+        """Cria o vetor de atributos que descreve as imagens"""
+        self.cria_vocabulario()
+
+    def cria_vocabulario(self):
+        """Cria vocabulario"""
+        self.bovw.cluster()
+
     def adiciona_e_detecta_pontos_de_interesse_de_uma_imagem(self, imagem):
         """Detecta os pontos de interesse de uma imagem"""
         imagem_em_tons_de_cinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
@@ -43,6 +52,26 @@ class BOVW:
 
         pontos_de_interesse = self.extrator.detect(imagem_em_tons_de_cinza)
         self.pontos_de_interesse_das_imagens.append(pontos_de_interesse)
+
+        self.numero_de_imagens += 1
+
+    def adiciona_descritor(self, descritor):
+        """Adiciona o descritor da imagem"""
+        self.bovw.add(descritor)
+
+    def adiciona_uma_imagem_e_detecta_descreve_pontos_de_interesses(self, imagem):
+        """Detecta e descreve os pontos de interesse de uma imagem"""
+        imagem_em_tons_de_cinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
+
+        self.imagens_BGR.append(imagem)
+        self.imagens_em_tons_de_cinza.append(imagem_em_tons_de_cinza)
+
+        pontos_de_interesse, descritor = self.extrator.detectAndCompute(imagem_em_tons_de_cinza, None)
+
+        self.adiciona_descritor(descritor)
+
+        self.pontos_de_interesse_das_imagens.append(pontos_de_interesse)
+        self.descritores_das_imagens.append(descritor)
 
         self.numero_de_imagens += 1
 
