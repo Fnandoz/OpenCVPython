@@ -16,7 +16,7 @@ Dada a imagem de uma mão executando uma jogada do jokenpo o programa informa qu
 
 
 
-## Dependências
+## Instalação e Dependências
 
 ### Linux
 - kubuntu trusty 14.04.2 TLS
